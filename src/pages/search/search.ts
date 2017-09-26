@@ -7,10 +7,15 @@ import { NavController } from 'ionic-angular';
 })
 export class SearchPage
 {
-
+  searchInput:string="";
   constructor(public navCtrl: NavController) 
   {
 
+  }
+
+  public inputCancel()
+  {
+    this.searchInput="";
   }
 
 }
