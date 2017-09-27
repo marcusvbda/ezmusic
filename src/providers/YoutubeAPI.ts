@@ -16,14 +16,15 @@ export class YoutubeAPI
 
       }
 
-      public getData(filter="") 
+      public getData(filter="",page="") 
       {
-            return this.http.get(this.getApiURL(filter)  ).map(res=>res.json());
+            return this.http.get(this.getApiURL(filter,page)  ).map(res=>res.json());
       }
 
       private getApiURL(filter="",page="")
       {
-            return this.api_url+this.api_key+'&videoCategories=10&type=video&maxResults=20&part=snippet&q='+filter+this.getPageURL();
+            let url = this.api_url+this.api_key+'&videoCategories=10&type=video&maxResults=10&part=snippet&q='+filter+this.getPageURL(page);
+            return url;
       }
 
       public getPageURL(page="")
@@ -33,6 +34,7 @@ export class YoutubeAPI
             else
                   return '';
       }
+
 
 
 

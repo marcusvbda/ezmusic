@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 import { YoutubeAPI } from '../../providers/YoutubeAPI';
 
 @Component(
@@ -9,12 +10,13 @@ import { YoutubeAPI } from '../../providers/YoutubeAPI';
 export class SearchPage
 {
   searchInput:string="";
-  videos:any= false;
-  foundVideos:boolean = false;
-  constructor(public navCtrl: NavController, public YoutubeAPI: YoutubeAPI) 
+  videos:any= [];
+
+  constructor(public navCtrl: NavController,public toastCtrl:ToastController, public YoutubeAPI: YoutubeAPI) 
   {
-      // this.init();
+    
   }
+
 
   public init()
   {   
@@ -26,11 +28,11 @@ export class SearchPage
     this.YoutubeAPI.getData(filter).subscribe(
       data =>
       {
-          this.videos = data,
-          this.foundVideos=true,
-          console.log(data)
+          this.videos = data
+          // ,console.log(data)
       },
-      err  => console.log(err)
+      err  =>
+        this.videos = []
     );
   }
 
@@ -44,11 +46,50 @@ export class SearchPage
     if(this.searchInput)
       this.getData(this.searchInput);
     else
-    {
-      this.videos = false;
-      this.foundVideos = false;
-    }
+      this.videos = [];
   }
-  
+
+  public play(video)
+  {
+    console.log(video.id.videoId);
+  }
+
+  public download(video)
+  {
+    let toast = this.toastCtrl.create({
+      message: video.snippet.title+' was added to your offline playlist',
+      duration: 3000,
+      position: 'middle'
+    });
+    
+    toast.present();
+  }
+
+  public nextPage(infiniteScroll) 
+  {
+      this.YoutubeAPI.getData(this.searchInput,this.videos.nextPageToken).subscribe(
+        data =>
+        {
+            this.videos = this.mergeVideos(this.videos,data),
+            infiniteScroll.complete()      
+            // ,console.log(this.videos)
+        },
+        err  => 
+          this.videos = []
+      );    
+  }
+
+  private mergeVideos(videos,data)
+  {
+      if(videos!=[])
+      {
+        videos.nextPageToken = data.nextPageToken;
+        for(let i=0;i<data.items.length;i++)
+        {
+          videos.items.push(data.items[i]);  
+        }
+      }
+      return videos;
+  }
 
 }

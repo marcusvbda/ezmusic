@@ -10,28 +10,45 @@
 </ion-header>
 
 <ion-content padding>
-  <div *ngIf="!foundVideos">
-    <h2>No Songs Found</h2>
-    <p>
-       Use the search area to find some one
-    </p>
-  </div>
-  <ion-list *ngFor="let video of videos.items"> 
 
-    <ion-item-sliding >
-      <ion-item >
+  <div class="totalcenter">
+    <div *ngIf="videos.length<=0" >
+      <h2>No Songs Found</h2>
+      <p>
+         Use the search area to find some one
+      </p>
+    </div>
+  </div>
+  
+  
+  <ion-list *ngFor="let video of videos.items"> 
+    <ion-card text-wrap text-center class="card">        
+      <img src="{{video.snippet.thumbnails.medium.url}}">       
+      <ion-item>
+        <ion-icon name="ios-musical-notes" md="md-musical-notes" item-left large ></ion-icon>              
         <strong>{{video.snippet.title}}</strong>
-        <p>{{video.snippet.description}}</p>
       </ion-item>
-      <ion-item-options side="right">
-        <button ion-button color="primary">
-          <ion-icon name="delete"></ion-icon>
-          Download
-        </button>
-      </ion-item-options>
-    </ion-item-sliding>
+      
+      <ion-item *ngIf="video.snippet.description">
+        <ion-icon name="ios-microphone" item-left large ></ion-icon>
+        <p text-wrap>{{video.snippet.description}}</p>  
+      </ion-item>
+      
+      <ion-item>
+          <button ion-button icon-left clear item-end (click)="download(video)">
+              <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon> Add to offline playlist
+            </button>
+          <button ion-button icon-left clear item-end (click)="play(video)">
+            <ion-icon ios="ios-play" md="md-play"></ion-icon> Just play
+          </button>
+      </ion-item>
+    </ion-card>
+
 
   </ion-list>
-
+  <ion-infinite-scroll (ionInfinite)="nextPage($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
   
+
 </ion-content>
