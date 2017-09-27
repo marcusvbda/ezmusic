@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 
@@ -23,7 +22,7 @@ export class YoutubeAPI
 
       private getApiURL(filter="",page="")
       {
-            let url = this.api_url+this.api_key+'&videoCategories=10&type=video&maxResults=10&part=snippet&q='+filter+this.getPageURL(page);
+            let url = this.api_url+this.api_key+'&videoCategories=10&type=video&maxResults=5&part=snippet&q='+filter+this.getPageURL(page);
             return url;
       }
 

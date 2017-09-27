@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { ToastController } from 'ionic-angular';
 import { YoutubeAPI } from '../../providers/YoutubeAPI';
 
 @Component(
@@ -11,18 +10,12 @@ export class SearchPage
 {
   searchInput:string="";
   videos:any= [];
-
-  constructor(public navCtrl: NavController,public toastCtrl:ToastController, public YoutubeAPI: YoutubeAPI) 
+  
+  constructor(public navCtrl: NavController, public YoutubeAPI: YoutubeAPI) 
   {
     
   }
 
-
-  public init()
-  {   
-    this.getData();
-  }
-  
   public getData(filter="")
   {
     this.YoutubeAPI.getData(filter).subscribe(
@@ -47,22 +40,6 @@ export class SearchPage
       this.getData(this.searchInput);
     else
       this.videos = [];
-  }
-
-  public play(video)
-  {
-    console.log(video.id.videoId);
-  }
-
-  public download(video)
-  {
-    let toast = this.toastCtrl.create({
-      message: video.snippet.title+' was added to your offline playlist',
-      duration: 3000,
-      position: 'middle'
-    });
-    
-    toast.present();
   }
 
   public nextPage(infiniteScroll) 
@@ -90,6 +67,11 @@ export class SearchPage
         }
       }
       return videos;
+  }
+
+  public play(video)
+  {
+    console.log(video);
   }
 
 }
