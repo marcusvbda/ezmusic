@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from 'ionic-angular';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
@@ -11,7 +10,7 @@ export class YoutubeAPI
       api_url:string = 'https://www.googleapis.com/youtube/v3/search?key=';
       api_key:string = 'AIzaSyDGcHYXjyS2XymCaksxBtoZl4LJvYnp3K0';
 
-      constructor(public http: Http,public toastCtrl: ToastController) 
+      constructor(public http: Http) 
       {
 
       }
@@ -35,54 +34,28 @@ export class YoutubeAPI
                   return '';
       }
 
-      public download(video)
+      public prepareDownload(video)
       {     
-            let url = "http://api.convert2mp3.cc/check.php?v=" + video.id.videoId + "&h=" + Math.floor(35e5 * Math.random());
-            
-            this.http.get( url ).map(res=>res).subscribe(
-            data =>
-            {
-                  let response =  this.getDownloadUrl(data['_body']);
-                  if(response.success)
-                  {
-                        top.location.href= response['url'];
-                        this.toast('Wait... the download will start soon');
-                  }  
-                  else
-                  {
-                       this.toast('Error downloading');
-                       
-                  }
-              },
-              err  => 
-              {
-                  this.toast('Error downloading');
-              }
-            );    
+            let url = "http://api.convert2mp3.cc/check.php?v=" + video.id.videoId + "&h=" + Math.floor(35e5 * Math.random());            
+            return this.http.get( url ).map(res=>res);
       }
 
-      private getDownloadUrl(data)
+      public getDownloadUrl(data)
       {
             var data = data.split("|");
+            console.log(data);
             if(data[0]=="OK")
                   return {
                               success:true, 
-                              url:"http://dl" +data[1] + ".downloader.space/dl.php?id=" + data[2]
+                              url:"http://dl" +data[1] + ".downloader.space/dl.php?id=" + data[2],
+                              title:data[3]
                          };
             else
                   return {success:false}
       }
 
-      
-      public toast(msg)
-      {
-            let toast = this.toastCtrl.create(
-            {
-                  message: msg,
-                  duration: 6000
-            });
-            toast.present();
-      }
+    
+
 
 
 
