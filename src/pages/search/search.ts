@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {YoutubeAPI} from '../../providers/YoutubeAPI';
-import {HelperProvider} from '../../providers/HelperProvider';
-
-import { MyMusics } from '../mymusics/mymusics';
+import {$} from '../../providers/HelperProvider';
 
 @Component(
 {
@@ -13,8 +11,7 @@ export class SearchPage
 {
   private searchInput:string = "";
   private videos:any= [];
-  private myMusics:any = MyMusics;
-  constructor(public navCtrl: NavController, public YoutubeAPI: YoutubeAPI,public Helper:HelperProvider,public navParams: NavParams) 
+  constructor(public navCtrl: NavController, public YoutubeAPI: YoutubeAPI,public $:$, public navParams: NavParams) 
   {
        
   }
@@ -72,13 +69,9 @@ export class SearchPage
       return videos;
   }
 
-  public play(video)
+  public download(video)
   {
-    // donwload first
-    // save in the cache
-    // get music id
-    let music = {id:1,title:'toxicity',author:'system of a down',duration:'224'};
-    this.navCtrl.push(this.myMusics,{music : music});
+    this.YoutubeAPI.download(video);
   }
 
 }

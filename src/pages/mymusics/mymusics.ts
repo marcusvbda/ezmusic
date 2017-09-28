@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
-import {HelperProvider} from '../../providers/HelperProvider';
+import {$} from '../../providers/HelperProvider';
+import { SearchPage } from '../search/search';
 
 @Component(
 {
@@ -8,16 +9,21 @@ import {HelperProvider} from '../../providers/HelperProvider';
 })
 export class MyMusics 
 {
-  private musicPlaying:any = null;
   private musics:any = {};
   private showList:boolean;
-  constructor(public navCtrl: NavController,public Helper:HelperProvider,public navParams: NavParams) 
+  public  searchPage:SearchPage;
+
+  constructor(public navCtrl: NavController,public $:$,public navParams: NavParams) 
   {
-    this.checkList();
+    console.log(this.navParams.get('music'));
+    this.showList = ( $.sizeOf(this.musics) > 0  );
   }
 
-  private checkList():void
-  {
-    this.showList = ( this.Helper.sizeOf(this.musics) > 0  );
-  }
+ 
+
 }
+
+
+
+
+

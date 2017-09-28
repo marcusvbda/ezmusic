@@ -23,7 +23,7 @@
   
   <ion-list *ngFor="let video of videos.items"> 
 
-    <ion-card text-wrap text-center class="card" (click)="play(video)">        
+    <ion-card text-wrap text-center class="card" (click)="download(video)">        
         <ion-item >
             <ion-thumbnail item-start>
               <img src="{{video.snippet.thumbnails.default.url}}">

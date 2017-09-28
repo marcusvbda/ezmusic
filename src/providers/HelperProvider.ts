@@ -1,7 +1,14 @@
-export class HelperProvider 
-{      
-      public sizeOf(obj)
-      {
-        return Object.keys(obj).length;
-      }
+export class $
+{
+  
+  constructor()
+  {
+    // 
+  }
+  public sizeOf(obj)
+  {
+    return Object.keys(obj).length;
+  }
+
+
 }

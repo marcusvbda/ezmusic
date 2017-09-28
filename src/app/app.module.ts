@@ -5,7 +5,7 @@ import { MyApp } from './app.component';
 import { HttpModule } from '@angular/http';
 
 import { YoutubeAPI } from '../providers/YoutubeAPI';
-import { HelperProvider } from '../providers/HelperProvider';
+import { $ } from '../providers/HelperProvider';
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -38,8 +38,8 @@ import { MyMusics } from '../pages/mymusics/mymusics';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    {provide: $, useClass: $},    
     {provide: YoutubeAPI, useClass: YoutubeAPI},
-    {provide: HelperProvider, useClass: HelperProvider}
   ]
 })
 export class AppModule {}
