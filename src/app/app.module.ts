@@ -5,19 +5,22 @@ import { MyApp } from './app.component';
 import { HttpModule } from '@angular/http';
 
 import { YoutubeAPI } from '../providers/YoutubeAPI';
-import { SongsPage } from '../pages/songs/songs';
-import { SearchPage } from '../pages/search/search';
-import { TabsPage } from '../pages/tabs/tabs';
+import { HelperProvider } from '../providers/HelperProvider';
+
+import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { TabsPage } from '../pages/tabs/tabs';
+import { SearchPage } from '../pages/search/search';
+import { MyMusics } from '../pages/mymusics/mymusics';
+
 
 @NgModule({
   declarations: [
     MyApp,
-    SongsPage,
     SearchPage,
-    TabsPage
+    TabsPage,
+    MyMusics
   ],
   imports: [
     BrowserModule,
@@ -27,15 +30,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    SongsPage,
     SearchPage,
-    TabsPage
+    TabsPage,
+    MyMusics
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: YoutubeAPI, useClass: YoutubeAPI}
+    {provide: YoutubeAPI, useClass: YoutubeAPI},
+    {provide: HelperProvider, useClass: HelperProvider}
   ]
 })
 export class AppModule {}
+

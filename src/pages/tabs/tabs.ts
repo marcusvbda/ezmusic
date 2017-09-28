@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { SongsPage } from '../songs/songs';
 import { SearchPage } from '../search/search';
+import { MyMusics } from '../mymusics/mymusics';
 
 @Component(
 {
@@ -10,8 +10,8 @@ import { SearchPage } from '../search/search';
 export class TabsPage 
 {
 
-  tabSongs:any  = SongsPage;
-  tabSearch:any = SearchPage;
+  tabSearch:any    = SearchPage;
+  tabMyMusics:any  = MyMusics;
 
   constructor() 
   {
