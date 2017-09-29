@@ -189,7 +189,7 @@ export class SearchPage
   {
     this.downloading_id=videoid;
     let fileTransfer: FileTransferObject = this.transfer.create();
-    let target = cordova.file.externalRootDirectory + '/ezmusic/' + filename;
+    let target = cordova.file.externalRootDirectory + '/Music/' + filename;
   
     fileTransfer.onProgress((progress) => 
     {
