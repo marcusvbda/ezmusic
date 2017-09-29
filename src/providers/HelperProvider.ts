@@ -13,9 +13,9 @@ export class $
   public convert2time(value)
   {
     value = value.replace("PT", "");
-    value = value.replace("H", " H : ");
-    value = value.replace("M", " M : ");
-    value = value.replace("S", " S ");
+    value = value.replace("H", " Hour: ");
+    value = value.replace("M", " Minutes: ");
+    value = value.replace("S", " Seconds");
     return value;
   }
 

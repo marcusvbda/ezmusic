@@ -1,5 +1,5 @@
 import {Component,NgZone} from '@angular/core';
-import {NavController,Platform, NavParams, AlertController} from 'ionic-angular';
+import {NavController,Platform, NavParams} from 'ionic-angular';
 import { Http } from '@angular/http';
 import { ToastController } from 'ionic-angular';
 import {$} from '../../providers/HelperProvider';
@@ -22,6 +22,7 @@ export class SearchPage
   api_key:string = 'AIzaSyDGcHYXjyS2XymCaksxBtoZl4LJvYnp3K0';
   progress:number=0;
   downloading_id:any=null;
+  downloadStack:any=[];
 
   constructor(public navCtrl: NavController,
      public $:$,
@@ -30,11 +31,11 @@ export class SearchPage
      public toastCtrl:ToastController,
      private transfer: FileTransfer,
      public platform:Platform,
-     public alertCtrl:AlertController,
      public _zone: NgZone
     ) 
   {    
-    // 
+    // this.searchInput = 'system of a down';
+    // this.getData('system of a down');
   }
 
 
@@ -139,26 +140,28 @@ export class SearchPage
   {   
     if(this.downloading_id!=null)
       return this.toast("Wait the download finish to start another one");
-    let url = "http://api.convert2mp3.cc/check.php?v=" + video.id + "&h=" + Math.floor(35e5 * Math.random());            
-    return this.http.get( url ).map(res=>res).subscribe(
-    data =>
-    {
-      let response =  this.getDownloadUrl(data);
-      if(response.success)
+
+      let url = "http://api.convert2mp3.cc/check.php?v=" + video.id + "&h=" + Math.floor(35e5 * Math.random());            
+      return this.http.get( url ).map(res=>res).subscribe(
+      data =>
       {
-            this.downloadFile(response['url'],response['title']+".mp3",video.id);                  
-            this.toast('Starting download...');
-      }  
-      else
-      {
-           this.toast('Error downloading 1');    
-      }
-    },
-      err  => 
-      {
-          this.toast('Error downloading 2');
-      }
-    );    
+        let response =  this.getDownloadUrl(data);
+        if(response.success)
+        {
+              this.downloadFile(response['url'],response['title']+".mp3",video.id);                  
+              this.toast('Starting download...'); 
+        }  
+        else
+        {
+             this.toast('Error downloading 1');    
+        }
+      },
+        err  => 
+        {
+            this.toast('Error downloading 2');
+        }
+      ); 
+   
   }
 
   public getDownloadUrl(data)
@@ -184,12 +187,11 @@ export class SearchPage
     toast.present();
   }
 
-
   public downloadFile(url, filename,videoid) 
   {
     this.downloading_id=videoid;
     let fileTransfer: FileTransferObject = this.transfer.create();
-    let target = cordova.file.externalRootDirectory + '/Music/' + filename;
+    let target = cordova.file.externalRootDirectory + '/EzMusic/' + filename;
   
     fileTransfer.onProgress((progress) => 
     {
@@ -206,24 +208,13 @@ export class SearchPage
     fileTransfer.download(encodeURI(url), target ).then(
     (entry) => 
     {
-      const alertSuccess = this.alertCtrl.create(
-      {
-        title: 'Download Succeeded!',
-        subTitle: filename+' was successfully downloaded',
-        buttons: ['Ok']
-      });
-      alertSuccess.present();
+      this.toast(filename+' was successfully downloaded, check your library');
       this.progress=0;
       this.downloading_id=null;          
     }, 
     (error) => 
     {
-      const alertFailure = this.alertCtrl.create({
-        title: 'Download Failed!',
-        subTitle: filename +' was not successfully downloaded. Error code: '+ error.code,
-        buttons: ['Ok']
-      });
-      alertFailure.present();  
+      this.toast(filename +' was not successfully downloaded. Error code: '+ error.code); 
       this.downloading_id=null;            
     });
 

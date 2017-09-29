@@ -9,11 +9,13 @@ import { File } from '@ionic-native/file';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SearchPage } from '../pages/search/search';
+import { TabsPage } from '../pages/tabs/tabs';
 
 @NgModule({
   declarations: [
     MyApp,
-    SearchPage
+    SearchPage,
+    TabsPage
   ],
   imports: [
     BrowserModule,
@@ -23,7 +25,8 @@ import { SearchPage } from '../pages/search/search';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    SearchPage
+    SearchPage,
+    TabsPage
   ],
   providers: [
     StatusBar,

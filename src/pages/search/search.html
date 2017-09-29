@@ -29,13 +29,16 @@
   <ion-list *ngFor="let video of videos.items"> 
 
     <ion-card text-wrap text-center class="card" (click)="download(video)">        
-        <ion-item >
-            <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon>
-            <strong text-wrap>{{video.snippet.title}}</strong>
+        <ion-item >            
+            <p>
+                <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon>
+                <strong text-wrap> {{video.snippet.title}}</strong>
+            </p>
+            <p text-right>
+                <ion-icon ios="ios-clock" md="md-clock"></ion-icon>
+                <small text-wrap>{{$.convert2time(video.contentDetails.duration)}}</small>
+            </p>
           </ion-item>  
-        <ion-item text-right> 
-          <small>{{$.convert2time(video.contentDetails.duration)}}</small>
-        </ion-item> 
       <progress *ngIf="downloading_id==video.id"  id="progressbar" max="100" value="{{progress}}" style="width:100%"> </progress>  
     </ion-card>
 
