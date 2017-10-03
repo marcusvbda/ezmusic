@@ -4,38 +4,39 @@ import { Http } from '@angular/http';
 import { ToastController } from 'ionic-angular';
 import {$} from '../../providers/HelperProvider';
 import 'rxjs/add/operator/map';
-import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
+import {File} from '@ionic-native/file';
+import { DownloadingPage } from '../downloading/downloading';
+import {DownloadProvider} from '../../providers/DownloadProvider';
+import { AlertController } from 'ionic-angular';
 
-
-declare var cordova: any;
 
 @Component(
 {
   templateUrl: 'search.html'
 })
+
 export class SearchPage
 {
   private searchInput:string = "";
   private videos:any= [];
-  api_url:string  = 'https://www.googleapis.com/youtube/v3/search?key=';
-  api_url2:string = 'https://www.googleapis.com/youtube/v3/videos?key=';
-  api_key:string = 'AIzaSyDGcHYXjyS2XymCaksxBtoZl4LJvYnp3K0';
-  progress:number=0;
-  downloading_id:any=null;
-  downloadStack:any=[];
+  public api_url:string  = 'https://www.googleapis.com/youtube/v3/search?key=';
+  public api_url2:string = 'https://www.googleapis.com/youtube/v3/videos?key=';
+  public api_key:string = 'AIzaSyDGcHYXjyS2XymCaksxBtoZl4LJvYnp3K0';
 
-  constructor(public navCtrl: NavController,
-     public $:$,
-     public navParams: NavParams,
-     public http: Http,
-     public toastCtrl:ToastController,
-     private transfer: FileTransfer,
-     public platform:Platform,
-     public _zone: NgZone
+  constructor(
+    public navCtrl: NavController,
+    public $:$,
+    public navParams: NavParams,
+    public http: Http,
+    public toastCtrl:ToastController,
+    public platform:Platform,
+    public _zone: NgZone,
+    public file:File,
+    public downloadProvider : DownloadProvider,
+    public alertCtrl: AlertController
     ) 
   {    
-    // this.searchInput = 'system of a down';
-    // this.getData('system of a down');
+  
   }
 
 
@@ -136,46 +137,35 @@ export class SearchPage
   }
 
     
-  public download(video)
-  {   
-    if(this.downloading_id!=null)
-      return this.toast("Wait the download finish to start another one");
-
-      let url = "http://api.convert2mp3.cc/check.php?v=" + video.id + "&h=" + Math.floor(35e5 * Math.random());            
-      return this.http.get( url ).map(res=>res).subscribe(
-      data =>
-      {
-        let response =  this.getDownloadUrl(data);
-        if(response.success)
-        {
-              this.downloadFile(response['url'],response['title']+".mp3",video.id);                  
-              this.toast('Starting download...'); 
-        }  
-        else
-        {
-             this.toast('Error downloading 1');    
-        }
-      },
-        err  => 
-        {
-            this.toast('Error downloading 2');
-        }
-      ); 
-   
-  }
-
-  public getDownloadUrl(data)
+  public addToStack(video)
   {
-    var data = data['_body'].split("|");
-    if(data[0]=="OK")
-      return{
-         success:true, 
-         url:"http://dl" +data[1] + ".downloader.space/dl.php?id=" + data[2],
-         title:data[3]
-      };
-    else
-      return {success:false}
+    const alert = this.alertCtrl.create({
+      title: 'Confirm',
+      message: 'Do you want to add '+video.snippet.title+' to your download list?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => 
+          {
+            console.log('No clicked');
+          }
+        },
+        {
+          text: 'Yes',
+          handler: () => 
+          {
+            this.downloadProvider.add(video); 
+            this.toast(video.snippet.title+" added to your download list, check the download page to run the list");
+          }
+        }
+      ]
+    });
+    alert.present();
   }
+
+  
+
 
   public toast(msg)
   {
@@ -186,42 +176,7 @@ export class SearchPage
     });
     toast.present();
   }
-
-  public downloadFile(url, filename,videoid) 
-  {
-    this.downloading_id=videoid;
-    let fileTransfer: FileTransferObject = this.transfer.create();
-    let target = cordova.file.externalRootDirectory + '/EzMusic/' + filename;
-  
-    fileTransfer.onProgress((progress) => 
-    {
-      this._zone.run(() =>  
-      {
-        if (progress.lengthComputable) 
-        {
-          this.progress = Math.round((progress.loaded / progress.total) * 100);
-        }
-      });   
-        
-    } );
-
-    fileTransfer.download(encodeURI(url), target ).then(
-    (entry) => 
-    {
-      this.toast(filename+' was successfully downloaded, check your library');
-      this.progress=0;
-      this.downloading_id=null;          
-    }, 
-    (error) => 
-    {
-      this.toast(filename +' was not successfully downloaded. Error code: '+ error.code); 
-      this.downloading_id=null;            
-    });
-
-
     
-
-  }
    
 
 

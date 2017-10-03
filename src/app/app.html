@@ -1,1 +1,46 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<!-- <ion-menu [content]="content">
+    
+    <ion-content no-bounce>
+
+      <ion-list>
+        <ion-list-header> 
+          Menu
+        </ion-list-header>
+        <button menuClose ion-item *ngFor="let menuItem of appMenuItems" (click)="openPage(menuItem)">
+          <ion-icon item-left [name]="menuItem.icon"></ion-icon>
+          {{menuItem.title}}
+        </button>
+      </ion-list>
+
+    </ion-content>
+    
+</ion-menu> -->
+
+<ion-menu [content]="content">
+    <ion-header>
+      <ion-toolbar color="purple">
+                  
+        <ion-title text-center >
+            <ion-icon name="ios-musical-notes" item-start></ion-icon>
+            EzMusic
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+  
+    <ion-content>
+      <ion-list>
+        <ion-item *ngFor="let menuItem of appMenuItems" text-wrap  (click)="openPage(menuItem)" menuToggle>
+          <h4 text-center>
+            {{menuItem.title}}
+            <ion-icon color="success" item-right [name]='arrow-dropdown'></ion-icon>
+          </h4>          
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  
+  </ion-menu>
+
+    <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+    
+

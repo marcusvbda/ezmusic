@@ -1,8 +1,11 @@
 <ion-header>
   <ion-navbar color="purple">
-    <ion-title text-center>
-        <ion-icon name="ios-musical-notes" item-start></ion-icon>
-        EzMusic
+      <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+      </button>
+    <ion-title>
+        <ion-icon ios="ios-search" md="md-search"></ion-icon>    
+        Search
       </ion-title>
   </ion-navbar>
   <ion-navbar color="purple">
@@ -28,7 +31,7 @@
   
   <ion-list *ngFor="let video of videos.items"> 
 
-    <ion-card text-wrap text-center class="card" (click)="download(video)">        
+    <ion-card text-wrap text-center class="card" (click)="addToStack(video)">        
         <ion-item >            
             <p>
                 <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon>
@@ -39,7 +42,6 @@
                 <small text-wrap>{{$.convert2time(video.contentDetails.duration)}}</small>
             </p>
           </ion-item>  
-      <progress *ngIf="downloading_id==video.id"  id="progressbar" max="100" value="{{progress}}" style="width:100%"> </progress>  
     </ion-card>
 
 
