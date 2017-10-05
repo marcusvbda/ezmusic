@@ -5,10 +5,9 @@ import { ToastController } from 'ionic-angular';
 import {$} from '../../providers/HelperProvider';
 import 'rxjs/add/operator/map';
 import {File} from '@ionic-native/file';
-import { DownloadingPage } from '../downloading/downloading';
-import {DownloadProvider} from '../../providers/DownloadProvider';
+import {AjaxProvider} from '../../providers/AjaxProvider';
 import { AlertController } from 'ionic-angular';
-
+import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
 
 @Component(
 {
@@ -22,7 +21,10 @@ export class SearchPage
   public api_url:string  = 'https://www.googleapis.com/youtube/v3/search?key=';
   public api_url2:string = 'https://www.googleapis.com/youtube/v3/videos?key=';
   public api_key:string = 'AIzaSyDGcHYXjyS2XymCaksxBtoZl4LJvYnp3K0';
-
+  public urlMp3:string="";
+  public playingId:string="";
+  public progress:number=0;
+  public downloading_id:any=null;
   constructor(
     public navCtrl: NavController,
     public $:$,
@@ -32,8 +34,9 @@ export class SearchPage
     public platform:Platform,
     public _zone: NgZone,
     public file:File,
-    public downloadProvider : DownloadProvider,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public ajaxProvider:AjaxProvider,
+    public transfer:FileTransfer
     ) 
   {    
   
@@ -137,11 +140,34 @@ export class SearchPage
   }
 
     
-  public addToStack(video)
+  public toast(msg)
   {
+    let toast = this.toastCtrl.create(
+    {
+       message: msg,
+       duration: 6000
+    });
+    toast.present();
+  }
+    
+   
+  public play(video)
+  {
+    if(this.downloading_id!=null)
+    {
+      return this.toast("Wait the download finish to start another one");
+    }
+    this.playingId =  video.id;    
+    let result = this.ajaxProvider.get("http://api.convert2mp3.cc/check.php?v=" + this.playingId + "&h=" + Math.floor(35e5 * Math.random()));  
+    let data = result.split("|");    
+    this.urlMp3 =  encodeURI("http://dl" +data[1] + ".downloader.space/dl.php?id=" + data[2]);
+  }
+
+  public download(video,url)
+  {    
     const alert = this.alertCtrl.create({
       title: 'Confirm',
-      message: 'Do you want to add '+video.snippet.title+' to your download list?',
+      message: 'Do you confirm download of '+video.snippet.title+'.mp3?',
       buttons: [
         {
           text: 'No',
@@ -155,8 +181,7 @@ export class SearchPage
           text: 'Yes',
           handler: () => 
           {
-            this.downloadProvider.add(video); 
-            this.toast(video.snippet.title+" added to your download list, check the download page to run the list");
+            this.downloadFile(video,url); 
           }
         }
       ]
@@ -164,21 +189,45 @@ export class SearchPage
     alert.present();
   }
 
-  
-
-
-  public toast(msg)
-  {
-    let toast = this.toastCtrl.create(
-    {
-       message: msg,
-       duration: 6000
-    });
-    toast.present();
-  }
+  private downloadFile(video,url)
+  {    
+    const fileTransfer: FileTransferObject = this.transfer.create();
     
-   
+    this.downloading_id = video.id;
+    fileTransfer.onProgress((progress) => 
+    {
+      this._zone.run(() =>  
+      {
+        if (progress.lengthComputable) 
+        {
+          this.progress = Math.round((progress.loaded / progress.total) * 100);
+        }
+      });   
+        
+    } );
 
+    console.log(this.file.dataDirectory);
 
+    // let target = this.file.dataDirectory+'/Download/' + video.snippet.title+".mp3";
+    let target = '/storage/emulated/0/Download/' + video.snippet.title+".mp3";
+    
+    fileTransfer.download(encodeURI(url) , target , true ).then(
+    (entry) => 
+    {
+      console.log('download complete: ' + entry.toURL());
+      this.toast(video.snippet.title+".mp3"+' is donwloaded');
+      this.progress=0;   
+      this.downloading_id=null;        
+    }, 
+    (error) => 
+    {
+      this.toast('Error downloading. Error code: '+ error.code); 
+      console.log(error);
+      this.downloading_id=null;
+    }); 
+    
+  }
+
+  
 
 }

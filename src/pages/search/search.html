@@ -3,10 +3,9 @@
       <button ion-button menuToggle>
           <ion-icon name="menu"></ion-icon>
       </button>
-    <ion-title>
-        <ion-icon ios="ios-search" md="md-search"></ion-icon>    
-        Search
-      </ion-title>
+    <ion-title text-center>
+        <img src="./assets/img/title.png" width="120px;">
+    </ion-title>
   </ion-navbar>
   <ion-navbar color="purple">
       <ion-searchbar 
@@ -24,24 +23,47 @@
       <h2>No Songs Found</h2>
       <p>
          Use the search area to find some one
-      </p>
+      </p>      
     </div>
   </div>
   
   
   <ion-list *ngFor="let video of videos.items"> 
 
-    <ion-card text-wrap text-center class="card" (click)="addToStack(video)">        
-        <ion-item >            
-            <p>
-                <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon>
-                <strong text-wrap> {{video.snippet.title}}</strong>
-            </p>
-            <p text-right>
-                <ion-icon ios="ios-clock" md="md-clock"></ion-icon>
-                <small text-wrap>{{$.convert2time(video.contentDetails.duration)}}</small>
-            </p>
-          </ion-item>  
+    <ion-card text-wrap (click)="play(video)">
+
+        <div class="card">
+            <ion-item>            
+                <p>
+                    <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon>
+                    <strong text-wrap> {{video.snippet.title}}</strong>
+                </p>
+                <p text-right>
+                    <ion-icon ios="ios-clock" md="md-clock"></ion-icon>
+                    <small text-wrap>{{$.convert2time(video.contentDetails.duration)}}</small>
+                </p>
+            </ion-item>  
+        </div>      
+        
+        <div  *ngIf="playingId==video.id">
+            <hr>
+            <ion-grid>
+                <ion-row>
+                    <ion-col col-10>
+                        <audio controls controlsList="nodownload" style="width:80%">
+                            <source src="{{urlMp3}}" type="audio/mpeg" >           
+                        </audio>
+                    </ion-col>
+                    <ion-col col-2>
+                        <button ion-button color="primary" (click)="download(video,urlMp3)">                            
+                            <ion-icon ios="ios-cloud-download" md="md-cloud-download"></ion-icon>
+                        </button>                        
+                    </ion-col>
+                </ion-row>
+            </ion-grid>   
+            <progress *ngIf="downloading_id==video.id"  id="progressbar" max="100" value="{{progress}}" style="width:100%"> </progress>          
+        </div>
+        
     </ion-card>
 
 
@@ -52,3 +74,9 @@
   
     
 </ion-content>
+
+
+<ion-footer >
+    <ion-toolbar color="purple">
+    </ion-toolbar>
+</ion-footer>
