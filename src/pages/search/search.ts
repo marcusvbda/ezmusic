@@ -25,6 +25,7 @@ export class SearchPage
   public playingId:string="";
   public progress:number=0;
   public downloading_id:any=null;
+  public btnDownloadText = 'Download';
   constructor(
     public navCtrl: NavController,
     public $:$,
@@ -39,9 +40,8 @@ export class SearchPage
     public transfer:FileTransfer
     ) 
   {    
-  
   }
-
+  public fileTransfer: FileTransferObject;
 
   private getApiURL(filter="",page="")
   {
@@ -145,7 +145,7 @@ export class SearchPage
     let toast = this.toastCtrl.create(
     {
        message: msg,
-       duration: 6000
+       duration: 3000
     });
     toast.present();
   }
@@ -191,41 +191,69 @@ export class SearchPage
 
   private downloadFile(video,url)
   {    
-    const fileTransfer: FileTransferObject = this.transfer.create();
-    
     this.downloading_id = video.id;
-    fileTransfer.onProgress((progress) => 
+    this.fileTransfer = this.transfer.create();
+    this.fileTransfer.onProgress((progress) => 
     {
       this._zone.run(() =>  
       {
         if (progress.lengthComputable) 
         {
-          this.progress = Math.round((progress.loaded / progress.total) * 100);
+          let porcent = Math.round((progress.loaded / progress.total) * 100);
+          this.btnDownloadText = porcent+'%';
         }
       });   
         
     } );
 
-    console.log(this.file.dataDirectory);
-
-    // let target = this.file.dataDirectory+'/Download/' + video.snippet.title+".mp3";
     let target = '/storage/emulated/0/Download/' + video.snippet.title+".mp3";
     
-    fileTransfer.download(encodeURI(url) , target , true ).then(
+    this.fileTransfer.download(encodeURI(url) , target , true ).then(
     (entry) => 
     {
-      console.log('download complete: ' + entry.toURL());
+      console.log(entry.toUrl());
       this.toast(video.snippet.title+".mp3"+' is donwloaded');
       this.progress=0;   
-      this.downloading_id=null;        
+      this.downloading_id=null;  
+      this.btnDownloadText = 'Download';      
     }, 
     (error) => 
     {
-      this.toast('Error downloading. Error code: '+ error.code); 
+      if( error.code==4)
+        this.toast('Download Aborted'); 
+      else
+        this.toast('Error downloading. Error code: '+ error.code); 
       console.log(error);
       this.downloading_id=null;
+      this.btnDownloadText = 'Download';
     }); 
     
+  }
+
+  public abortDownload()
+  {    
+    const alert = this.alertCtrl.create({
+      title: 'Confirm',
+      message: 'Abort donwload ?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => 
+          {
+            console.log('No clicked');
+          }
+        },
+        {
+          text: 'Yes',
+          handler: () => 
+          {
+            this.fileTransfer.abort();
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   
