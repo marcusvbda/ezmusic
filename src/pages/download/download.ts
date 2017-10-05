@@ -216,7 +216,7 @@ export class DownloadPage
       console.log(entry.nativeURL);
       // let song: MediaObject = this.audio.create(entry.nativeURL);
       // song.play();
-      this.toast(video.snippet.title+".mp3"+' is donwloaded');
+      this.toast(video.snippet.title+".mp3"+' is successfully downloaded');
       this.progress=0;   
       this.downloading_id=null;  
       this.btnDownloadText = 'Download';      
@@ -238,14 +238,14 @@ export class DownloadPage
   {    
     const alert = this.alertCtrl.create({
       title: 'Confirm',
-      message: 'Abort donwload ?',
+      message: 'Abort download ?',
       buttons: [
         {
           text: 'No',
           role: 'cancel',
           handler: () => 
           {
-            console.log('No clicked');
+            // console.log('No clicked');
           }
         },
         {
