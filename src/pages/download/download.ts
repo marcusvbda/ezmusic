@@ -8,13 +8,14 @@ import {File} from '@ionic-native/file';
 import {AjaxProvider} from '../../providers/AjaxProvider';
 import { AlertController } from 'ionic-angular';
 import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
+declare var cordova;
 
 @Component(
 {
-  templateUrl: 'search.html'
+  templateUrl: 'download.html'
 })
 
-export class SearchPage
+export class DownloadPage
 {
   private searchInput:string = "";
   private videos:any= [];
@@ -206,12 +207,15 @@ export class SearchPage
         
     } );
 
-    let target = '/storage/emulated/0/Download/' + video.snippet.title+".mp3";
+    let  target = '/storage/emulated/0/Download/' + video.snippet.title;
+    
     
     this.fileTransfer.download(encodeURI(url) , target , true ).then(
     (entry) => 
     {
-      console.log(entry.toUrl());
+      console.log(entry.nativeURL);
+      // let song: MediaObject = this.audio.create(entry.nativeURL);
+      // song.play();
       this.toast(video.snippet.title+".mp3"+' is donwloaded');
       this.progress=0;   
       this.downloading_id=null;  

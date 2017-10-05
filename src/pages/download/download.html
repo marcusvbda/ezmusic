@@ -3,7 +3,7 @@
       <button ion-button menuToggle>
           <ion-icon name="menu"></ion-icon>
       </button>
-    <ion-title text-center>
+    <ion-title text-center margin-top="10px">
         <img src="./assets/img/title.png" width="120px;">
     </ion-title>
   </ion-navbar>
@@ -12,7 +12,8 @@
         [(ngModel)]="searchInput"
         [showCancelButton]="shouldShowCancel"
         (ionCancel)="inputCancel()"
-        (ionInput)="search()">
+        (ionInput)="search()"
+        spellcheck=true>
     </ion-searchbar>
   </ion-navbar>
 </ion-header>
@@ -85,5 +86,6 @@
 
 <ion-footer >
     <ion-toolbar color="purple">
+        <ion-title text-center>Music Downloader</ion-title>
     </ion-toolbar>
 </ion-footer>

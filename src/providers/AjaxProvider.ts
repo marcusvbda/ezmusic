@@ -12,6 +12,7 @@ export class AjaxProvider
         oReq.send(null);
         return oReq.responseText;
     }
+    
 
   
 

@@ -1,7 +1,7 @@
 import { Component,ViewChild } from '@angular/core';
 import {Nav, Platform} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
-import { SearchPage } from '../pages/search/search';
+import { DownloadPage } from '../pages/download/download';
 
 export interface MenuItem {
     title: string;
@@ -14,12 +14,13 @@ export interface MenuItem {
 export class MyApp 
 {
   @ViewChild(Nav) nav: Nav;
-  rootPage:any = SearchPage;
+  rootPage:any = DownloadPage;
   appMenuItems: Array<MenuItem>;
   constructor(public platform: Platform, public statusBar: StatusBar)
   {
     
   }
 
-}
+  
 
+}

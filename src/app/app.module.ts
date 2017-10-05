@@ -9,12 +9,12 @@ import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { SearchPage } from '../pages/search/search';
-
+import { DownloadPage } from '../pages/download/download';
+import { Media } from '@ionic-native/media';
 @NgModule({
   declarations: [
     MyApp,
-    SearchPage
+    DownloadPage
   ],
   imports: [
     BrowserModule,
@@ -24,7 +24,7 @@ import { SearchPage } from '../pages/search/search';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    SearchPage
+    DownloadPage
   ],
   providers: [
     StatusBar,
@@ -34,8 +34,8 @@ import { SearchPage } from '../pages/search/search';
     File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     {provide: $, useClass: $},
-    {provide: AjaxProvider, useClass: AjaxProvider}
-    
+    {provide: AjaxProvider, useClass: AjaxProvider} ,
+    Media 
   ]
 })
 export class AppModule {}
