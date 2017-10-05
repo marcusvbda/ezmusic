@@ -8,7 +8,7 @@ import {File} from '@ionic-native/file';
 import {AjaxProvider} from '../../providers/AjaxProvider';
 import { AlertController } from 'ionic-angular';
 import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
-declare var cordova;
+// declare var cordova;
 
 @Component(
 {
@@ -207,7 +207,7 @@ export class DownloadPage
         
     } );
 
-    let  target = '/storage/emulated/0/Download/' + video.snippet.title;
+    let  target = '/storage/emulated/0/Download/' + video.snippet.title+".mp3";
     
     
     this.fileTransfer.download(encodeURI(url) , target , true ).then(
