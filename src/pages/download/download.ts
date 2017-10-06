@@ -10,12 +10,12 @@ import { AlertController } from 'ionic-angular';
 import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
 import { Keyboard } from 'ionic-native';
 import { PhonegapLocalNotification } from '@ionic-native/phonegap-local-notification';
+declare var cordova;
 
 @Component(
 {
   templateUrl: 'download.html'
 })
-
 export class DownloadPage
 {
   private searchInput:string = "";
@@ -29,6 +29,7 @@ export class DownloadPage
   public downloading_id:any=null;
   public btnDownloadText = 'Download';
   public loading:any;
+  public StorageDir = '/storage/emulated/0/musics/';
   constructor(
     public navCtrl: NavController,
     public $:$,
@@ -49,13 +50,15 @@ export class DownloadPage
       spinner: 'crescent',
       content: 'Please wait...'
     });
-  }
-  public fileTransfer: FileTransferObject;
 
-  // public ionViewDidLoad() 
-  // {
-  //   // setTimeout(() => this.splash = false, 4000);
-  // }
+
+    platform.ready().then(() => 
+    {
+      // console.log(this.StorageDir);
+    })
+  }
+  
+  public fileTransfer: FileTransferObject;
 
   private getApiURL(filter="",page="")
   {
@@ -79,15 +82,15 @@ export class DownloadPage
       {
           ids = this.getIds(data);
           this.http.get(this.getApiURL(filter,page)  ).map(res=>res.json()).subscribe(
-            data =>
-            {
-              this.http.get(this.api_url2+this.api_key + "&id="+ids+"&part=contentDetails,snippet").map(res=>res.json()).subscribe(
-                data =>
-                {
-                    this.videos = data;
-                    this.loading.dismiss();
-                });
-            });
+          data =>
+          {
+            this.http.get(this.api_url2+this.api_key + "&id="+ids+"&part=contentDetails,snippet").map(res=>res.json()).subscribe(
+              data =>
+              {
+                  this.videos = data;
+                  this.loading.dismiss();
+              });
+          });
       }
     );
 
@@ -106,7 +109,8 @@ export class DownloadPage
 
   public inputCancel()
   {
-    this.searchInput="";
+    this.videos = [];   
+    this.searchInput="";    
   }
 
   public search()
@@ -224,13 +228,14 @@ export class DownloadPage
         
     } );
 
-    let  target = '/storage/emulated/0/Download/' + video.snippet.title+".mp3";
+    let title = video.snippet.title+".mp3";
+
+    let  target = this.StorageDir + title;
     
     
     this.fileTransfer.download(encodeURI(url) , target , true ).then(
     (entry) => 
     {
-      console.log(entry.toURL());
       this.toast(video.snippet.title+".mp3"+' is successfully downloaded');
       this.progress=0;   
       this.downloading_id=null;  

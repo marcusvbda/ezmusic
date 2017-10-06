@@ -1,13 +1,5 @@
 <ion-header>
   <ion-navbar color="purple">
-      <button ion-button menuToggle>
-          <ion-icon name="menu"></ion-icon>
-      </button>
-    <ion-title text-center margin-top="10px">
-        <img src="./assets/img/title.png" width="120px;">
-    </ion-title>
-  </ion-navbar>
-  <ion-navbar color="purple">
       <ion-searchbar 
         [(ngModel)]="searchInput"
         [showCancelButton]="shouldShowCancel"
@@ -86,6 +78,9 @@
 
 <ion-footer >
     <ion-toolbar color="purple">
-        <ion-title text-center>Music Downloader</ion-title>
+        <ion-title text-center>
+            
+            <img src="./assets/img/title.png" width="120px;">
+        </ion-title>
     </ion-toolbar>
 </ion-footer>
