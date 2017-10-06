@@ -1,14 +1,15 @@
 import {Component,NgZone} from '@angular/core';
 import {NavController,Platform, NavParams} from 'ionic-angular';
 import { Http } from '@angular/http';
-import { ToastController } from 'ionic-angular';
+import { ToastController, LoadingController  } from 'ionic-angular';
 import {$} from '../../providers/HelperProvider';
 import 'rxjs/add/operator/map';
 import {File} from '@ionic-native/file';
 import {AjaxProvider} from '../../providers/AjaxProvider';
 import { AlertController } from 'ionic-angular';
 import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
-// declare var cordova;
+import { Keyboard } from 'ionic-native';
+import { PhonegapLocalNotification } from '@ionic-native/phonegap-local-notification';
 
 @Component(
 {
@@ -27,6 +28,7 @@ export class DownloadPage
   public progress:number=0;
   public downloading_id:any=null;
   public btnDownloadText = 'Download';
+  public loading:any;
   constructor(
     public navCtrl: NavController,
     public $:$,
@@ -38,11 +40,22 @@ export class DownloadPage
     public file:File,
     public alertCtrl: AlertController,
     public ajaxProvider:AjaxProvider,
-    public transfer:FileTransfer
+    public transfer:FileTransfer,
+    public localNotification:PhonegapLocalNotification,
+    public loadingController:LoadingController
     ) 
   {    
+    this.loading = this.loadingController.create({
+      spinner: 'crescent',
+      content: 'Please wait...'
+    });
   }
   public fileTransfer: FileTransferObject;
+
+  // public ionViewDidLoad() 
+  // {
+  //   // setTimeout(() => this.splash = false, 4000);
+  // }
 
   private getApiURL(filter="",page="")
   {
@@ -72,6 +85,7 @@ export class DownloadPage
                 data =>
                 {
                     this.videos = data;
+                    this.loading.dismiss();
                 });
             });
       }
@@ -97,10 +111,13 @@ export class DownloadPage
 
   public search()
   {
+    this.loading.present();  
     if(this.searchInput)
       this.getData(this.searchInput);
     else
       this.videos = [];
+
+    Keyboard.close();
   }
 
   public nextPage(infiniteScroll) 
@@ -213,13 +230,12 @@ export class DownloadPage
     this.fileTransfer.download(encodeURI(url) , target , true ).then(
     (entry) => 
     {
-      console.log(entry.nativeURL);
-      // let song: MediaObject = this.audio.create(entry.nativeURL);
-      // song.play();
+      console.log(entry.toURL());
       this.toast(video.snippet.title+".mp3"+' is successfully downloaded');
       this.progress=0;   
       this.downloading_id=null;  
       this.btnDownloadText = 'Download';      
+      this.notification(video.snippet.title+".mp3","Sucessfully Downloaded");
     }, 
     (error) => 
     {
@@ -258,6 +274,24 @@ export class DownloadPage
       ]
     });
     alert.present();
+  }
+
+
+  private notification(title,msg)
+  {
+    this.localNotification.requestPermission().then(
+    (permission) => 
+    {
+      if (permission === 'granted') 
+      {    
+        this.localNotification.create(title, 
+        {
+          body: msg,
+          icon: 'assets/icon/favicon.ico'
+        });
+    
+      }
+    });
   }
 
   

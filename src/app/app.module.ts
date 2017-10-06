@@ -7,10 +7,10 @@ import { $ } from '../providers/HelperProvider';
 import { AjaxProvider } from '../providers/AjaxProvider';
 import { FileTransfer,  FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
-import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { DownloadPage } from '../pages/download/download';
 import { Media } from '@ionic-native/media';
+import { PhonegapLocalNotification } from '@ionic-native/phonegap-local-notification';
 @NgModule({
   declarations: [
     MyApp,
@@ -28,14 +28,14 @@ import { Media } from '@ionic-native/media';
   ],
   providers: [
     StatusBar,
-    SplashScreen,
     FileTransfer, 
     FileTransferObject,
     File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     {provide: $, useClass: $},
     {provide: AjaxProvider, useClass: AjaxProvider} ,
-    Media 
+    Media ,
+    PhonegapLocalNotification
   ]
 })
 export class AppModule {}

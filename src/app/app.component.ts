@@ -2,7 +2,6 @@ import { Component,ViewChild } from '@angular/core';
 import {Nav, Platform} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { DownloadPage } from '../pages/download/download';
-
 export interface MenuItem {
     title: string;
     component: any;
